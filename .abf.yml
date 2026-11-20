@@ -1,2 +1,4 @@
 sources:
+  dokka-2.3.0.tar.gz: 5147bcebc27048c7bf7a191f49c839bdee7fc4f5
+removed_sources:
   dokka-2.2.0.tar.gz: f089a5cd906c84afcb342c2673560863a59e3ba2

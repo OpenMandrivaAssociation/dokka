@@ -1,18 +1,20 @@
 Name:		dokka
-Version:	2.2.0
+Version:	2.3.0
 Release:	1
 Summary:	Dokka documentation engine and Gradle plugin
 Group:		Development/Java
 License:	Apache-2.0
 URL:		https://github.com/Kotlin/dokka
-# Tag v2.2.0 (656ca46fbbd676d872b0bd383042fc12ae7adcdd).
+# Tag v2.3.0 (c6cd48aeb43513a45dfe81bcbc8e4a59972fd627).
 # Upstream builds with Gradle. This package compiles dokka-core and
-# dokka-gradle-plugin with kotlinc 2.0.21. The Gradle 8.11 variant is
-# the one installed in cooker. KotlinJvmAndroidCompilation is omitted
-# from the published Kotlin Gradle plugin 2.4.21 jar, so those call
-# sites are compiled out. com.android.Version comes from the AOSP class
-# already used by dependency-analysis, loaded from version.properties.
+# dokka-gradle-plugin with kotlinc 2.0.21 against cooker Gradle 9.9.1.
+# KotlinJvmAndroidCompilation is omitted from the published Kotlin
+# Gradle plugin 2.4.21 jar, so those call sites are compiled out.
+# com.android.Version comes from the AOSP class already used by
+# dependency-analysis, loaded from version.properties.
 Source0:	dokka-%{version}.tar.gz
+%{!?dokka_javadir:%global dokka_javadir %{_javadir}}
+%{!?dokka_gradle_home:%global dokka_gradle_home /usr/share/gradle}
 
 BuildArch:	noarch
 BuildRequires:	java-21-openjdk-devel
@@ -21,15 +23,15 @@ BuildRequires:	kotlin-libs = 2.0.21
 BuildRequires:	python
 BuildRequires:	sysjar
 BuildRequires:	javapackages-filesystem
-BuildRequires:	gradle = 8.11.1
+BuildRequires:	gradle = 9.9.1
 BuildRequires:	mvn(com.fasterxml.jackson.core:jackson-databind) = 2.23.0
 BuildRequires:	mvn(com.fasterxml.jackson.core:jackson-core) = 2.23.0
 BuildRequires:	mvn(com.fasterxml.jackson.core:jackson-annotations) = 2.23
 BuildRequires:	mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml) = 2.23.0
 BuildRequires:	mvn(com.fasterxml.jackson.module:jackson-module-kotlin) = 2.23.0
-BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.10.2
-BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-core) = 1.11.0
-BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-json) = 1.11.0
+BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.11.0
+BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-core) = 1.13.0
+BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-json) = 1.13.0
 BuildRequires:	mvn(org.jetbrains.kotlin:kotlin-gradle-plugin) = 2.4.21
 BuildRequires:	mvn(org.jetbrains.kotlin:kotlin-gradle-plugin-api) = 2.4.21
 BuildRequires:	mvn(org.jetbrains.kotlin:kotlin-tooling-core) = 2.4.21
@@ -43,7 +45,7 @@ Requires:	mvn(com.fasterxml.jackson.core:jackson-core) = 2.23.0
 Requires:	mvn(com.fasterxml.jackson.core:jackson-annotations) = 2.23
 Requires:	mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml) = 2.23.0
 Requires:	mvn(com.fasterxml.jackson.module:jackson-module-kotlin) = 2.23.0
-Requires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.10.2
+Requires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.11.0
 Requires:	mvn(org.jetbrains.kotlin:kotlin-stdlib)
 Requires:	mvn(org.jetbrains.kotlin:kotlin-reflect)
 
@@ -56,9 +58,9 @@ that configuration as JSON.
 Summary:	Gradle plugin for the Dokka documentation engine
 Group:		Development/Java
 Requires:	dokka = %{EVRD}
-Requires:	gradle = 8.11.1
-Requires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-json) = 1.11.0
-Requires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-core) = 1.11.0
+Requires:	gradle = 9.9.1
+Requires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-json) = 1.13.0
+Requires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-core) = 1.13.0
 Requires:	mvn(javax.inject:javax.inject) = 1.0.5
 Requires:	mvn(org.jetbrains.kotlin:kotlin-stdlib)
 Requires:	mvn(org.jetbrains.kotlin:kotlin-reflect)
@@ -94,7 +96,8 @@ test -s check/DokkaPluginCheck.kt
 set -eo pipefail
 export JAVA_HOME=%{_jvmdir}/java-21-openjdk
 export PATH="$JAVA_HOME/bin:/usr/bin:/bin"
-export JAVADIR=%{_javadir}
+export JAVADIR=%{dokka_javadir}
+export GRADLE_HOME=%{dokka_gradle_home}
 bash ./build.sh
 test -s dokka-core.jar
 test -s dokka-gradle-plugin.jar
@@ -144,7 +147,7 @@ cat > dokka-core.pom << END
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-coroutines-core-jvm</artifactId>
-      <version>1.10.2</version>
+      <version>1.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -185,12 +188,12 @@ cat > dokka-gradle-plugin.pom << END
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-serialization-json</artifactId>
-      <version>1.11.0</version>
+      <version>1.13.0</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-serialization-core</artifactId>
-      <version>1.11.0</version>
+      <version>1.13.0</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -238,7 +241,8 @@ test -s %{buildroot}%{_javadir}/dokka-gradle-plugin.jar
 set -eo pipefail
 export JAVA_HOME=%{_jvmdir}/java-21-openjdk
 export PATH="$JAVA_HOME/bin:/usr/bin:/bin"
-export JAVADIR=%{_javadir}
+export JAVADIR=%{dokka_javadir}
+export GRADLE_HOME=%{dokka_gradle_home}
 bash ./check.sh %{buildroot}%{_javadir}/dokka-core.jar %{buildroot}%{_javadir}/dokka-gradle-plugin.jar
 
 %files -f core.files
