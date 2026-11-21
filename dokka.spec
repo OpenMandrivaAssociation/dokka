@@ -1,6 +1,6 @@
 Name:		dokka
 Version:	2.3.0
-Release:	1
+Release:	2
 Summary:	Dokka documentation engine and Gradle plugin
 Group:		Development/Java
 License:	Apache-2.0
@@ -13,8 +13,6 @@ URL:		https://github.com/Kotlin/dokka
 # com.android.Version comes from the AOSP class already used by
 # dependency-analysis, loaded from version.properties.
 Source0:	dokka-%{version}.tar.gz
-# Cooker coroutines is 1.10.2. The jar name is versioned.
-Patch0:		dokka-coroutines-1.10.2.patch
 %{!?dokka_javadir:%global dokka_javadir %{_javadir}}
 %{!?dokka_gradle_home:%global dokka_gradle_home /usr/share/gradle}
 
@@ -31,7 +29,7 @@ BuildRequires:	mvn(com.fasterxml.jackson.core:jackson-core) = 2.23.0
 BuildRequires:	mvn(com.fasterxml.jackson.core:jackson-annotations) = 2.23
 BuildRequires:	mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml) = 2.23.0
 BuildRequires:	mvn(com.fasterxml.jackson.module:jackson-module-kotlin) = 2.23.0
-BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.10.2
+BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.11.0
 BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-core) = 1.13.0
 BuildRequires:	mvn(org.jetbrains.kotlinx:kotlinx-serialization-json) = 1.13.0
 BuildRequires:	mvn(org.jetbrains.kotlin:kotlin-gradle-plugin) = 2.4.21
@@ -47,7 +45,7 @@ Requires:	mvn(com.fasterxml.jackson.core:jackson-core) = 2.23.0
 Requires:	mvn(com.fasterxml.jackson.core:jackson-annotations) = 2.23
 Requires:	mvn(com.fasterxml.jackson.dataformat:jackson-dataformat-xml) = 2.23.0
 Requires:	mvn(com.fasterxml.jackson.module:jackson-module-kotlin) = 2.23.0
-Requires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.10.2
+Requires:	mvn(org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm) = 1.11.0
 Requires:	mvn(org.jetbrains.kotlin:kotlin-stdlib)
 Requires:	mvn(org.jetbrains.kotlin:kotlin-reflect)
 
@@ -76,7 +74,7 @@ DokkaPlugin registers the dokka HTML publication on a Gradle project.
 The engine version on DokkaExtension is %{version}.
 
 %prep
-%autosetup -n dokka-%{version} -p1
+%autosetup -n dokka-%{version}
 find . -type f \( -name '*.jar' -o -name '*.class' -o -name '*.so' -o -name '*.node' -o -name '*.wasm' \) -print > binaries.list
 if [ -s binaries.list ]; then
 	cat binaries.list
@@ -152,7 +150,7 @@ cat > dokka-core.pom << END
     <dependency>
       <groupId>org.jetbrains.kotlinx</groupId>
       <artifactId>kotlinx-coroutines-core-jvm</artifactId>
-      <version>1.10.2</version>
+      <version>1.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
